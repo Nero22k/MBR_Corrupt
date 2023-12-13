@@ -11,11 +11,11 @@ start:
     mov ah, 06h        ; Clear screen and set attributes in one go
     mov bh, 04h        ; Page number for video functions
     xor al, al         ; Number of lines by which to scroll up (00h = clear entire window)
-	xor cx, cx         ; Row,column of window's upper left corner
-	mov dx, 184Fh      ; Row,column of window's lower right corner
-	int 10h
+    xor cx, cx         ; Row,column of window's upper left corner
+    mov dx, 184Fh      ; Row,column of window's lower right corner
+    int 10h
 
-	lea si, ascii_art  ; Load address of ascii_art
+    lea si, ascii_art  ; Load address of ascii_art
     ; Print characters until line break (0Dh,0Ah)
 _loop:
     lodsb              ; Load byte at SI into AL, increment SI
