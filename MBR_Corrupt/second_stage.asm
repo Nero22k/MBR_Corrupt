@@ -1,8 +1,4 @@
 ;---------------------------------------------------
-
-include IO.asm
-include Utils.asm
-
 .386						; Compile for a 80386 CPU
 option segment:use16		; Force 16 bit segments instead of default 32 bit
 .model tiny					; Tiny memory model
@@ -23,12 +19,12 @@ start:
 	mov si, offset content
 	call puts
 
-Loop:
+_Loop:
 	mov si, offset label_for_input
 	call puts
 	mov si, offset user_input
 	call get_user_input
-	mov bx, new_line
+	mov bx, offset new_line
 	call puts
 
 	mov si, offset user_input
@@ -42,7 +38,7 @@ Loop:
 	error:
 		mov si, offset error_key
 		call puts
-		jmp Loop
+		jmp _Loop
 
 SectorCopy:
 	; Setup segments
@@ -58,7 +54,7 @@ SectorCopy:
 DiskRead:
     ;---read sector - 5th
     mov bx, buffer               ; ES: BX must point to the buffer
-    mov dl, byte ptr [DISK]      ; use boot drive passed to bootloader by BIOS in DL
+    mov dl, [DISK]      ; use boot drive passed to bootloader by BIOS in DL
     mov dh, 0                    ; head number
     mov ch, 0                    ; track number
     mov cl, 05h                    ; sector number - (5th)
@@ -71,7 +67,7 @@ DiskRead:
 DiskWrite:
     ;---write sector - 1th
     mov bx, buffer               ; ES: BX must point to the buffer
-	mov dl, byte ptr [DISK]      ; use boot drive passed to bootloader by BIOS in DL
+	mov dl, [DISK]      ; use boot drive passed to bootloader by BIOS in DL
     mov dh, 0                    ; head number
     mov ch, 0                    ; track number
     mov cl, 01h                    ; sector number - (1th)
@@ -87,12 +83,12 @@ DiskCleanup:
     mov cx, 200h                ; 512 bytes per sector
     xor ax, ax                  ; Zero in AX
 clear_buffer:
-    mov word ptr [bx], ax       ; Write zero to buffer
+    mov [bx], ax       ; Write zero to buffer
     add bx, 02h                 ; Move BX to the next word (2 bytes)
     loop clear_buffer           ; Repeat for the entire buffer
 	
 	mov bx, buffer               ; Point BX to the start of the buffer
-	mov dl, byte ptr [DISK]      ; use boot drive passed to bootloader by BIOS in DL
+	mov dl, [DISK]      ; use boot drive passed to bootloader by BIOS in DL
     mov dh, 0                    ; head number
     mov ch, 0                    ; track number
     mov cl, 05h                    ; sector number - (5th)
@@ -104,6 +100,8 @@ clear_buffer:
 
 	int 19h                      ; Warm reboot, should run bootloader that was in sector 5 (original bootloader)
 
+include IO.inc
+include Utils.inc
 
 db 0
 key db "must-try-a-bit-harder", 0
@@ -120,5 +118,5 @@ DISK db 80h
 disknum db 99h
 buffer equ 9200h
 
-db 1024-($-start) dup(0)
+db 206 dup(0)
 end start

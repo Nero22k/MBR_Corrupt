@@ -1,5 +1,5 @@
 ; input output functions
-setColors proc:
+setColors proc
     mov ah, 06h     ;Function 0x06 = Scroll up function
 	xor al, al      ; Number of lines by which to scroll up (00h = clear entire window)
     xor cx, cx      ;From upper left corner
@@ -9,20 +9,17 @@ setColors proc:
     ret             ;Return
 setColors endp
 
-puts proc uses ax si:      
-	cmp byte ptr [si], 0h        ; Check if end of string
+puts proc      
+	cmp byte ptr [si], 0        ; Check if end of string
 	je end_put                  ; If so, return
 		
-	mov al, byte ptr [si]       ; Get char
+	mov al, [si]       			; Get char
 	call putc                   ; Print char
 	inc si                      ; Increment pointer to next char
 	jmp puts                    ; Loop
-
-    end_put:
-        ret                     ; Return
 puts endp
 
-putc proc:
+putc proc
 	mov ah, 0Eh                 ; TeleTYpe output
 	xor bh, bh                  ; Page number
 	mov bl, 4Fh                 ; Color
@@ -30,7 +27,10 @@ putc proc:
 	ret
 putc endp
 
-get_user_input proc uses ax si:
+end_put:
+	ret                     ; Return
+
+get_user_input proc
 
 	Loop_Get_Input:
 		xor ah, ah              ; Get char from keyboard
@@ -40,7 +40,7 @@ get_user_input proc uses ax si:
 		je Exit_Input
 		cmp al, 08h             ; User Press BackSpace
 		je Remove_Char
-		mov byte ptr [si], al   ; Put char in the current address
+		mov [si], al   ; Put char in the current address
 		call putc               ; Print char
 		inc si                  ; Increment pointer to next char
 		jmp Loop_Get_Input      ; Again
@@ -54,7 +54,7 @@ get_user_input proc uses ax si:
 		call putc
 		dec si
 		xor al, al
-		mov byte ptr [si], al            ;  Put null In The Current Address to remove the Char 
+		mov [si], al            ;  Put null In The Current Address to remove the Char 
 
 		jmp Loop_Get_Input
 	
@@ -62,7 +62,7 @@ get_user_input proc uses ax si:
 		int 10h
 		xor al, al
 		inc si
-		mov byte ptr [si], al           ; null-terminate input string 
+		mov [si], al           ; null-terminate input string 
 		ret                             ; callable
 
 get_user_input endp

@@ -12,7 +12,7 @@ start:
 
 DiskRead:
 	mov ah, 02h                 ; Function: read disk
-	mov bx, KERNEL_ADDRESS      ; The address that we need it in the disk
+	mov bx, SECOND_STAGE        ; The address that we need it in the disk
 	mov al, 02h                 ; Read for about 1024 bytes or / 2 sectors
 	mov dl, byte ptr [DISK]     ; Hardcoded Disk number
 
@@ -24,9 +24,9 @@ DiskRead:
 	int 13h                     ; Call BIOS interrupt 13h
 	jc DiskRead                 ; read again on error
 
-    jmp SECOND_STAGE           ; Jump to the SECOND_STAGE
+	jmp SECOND_STAGE            ; Indirect far jump
 
-SECOND_STAGE equ 7E00h
+SECOND_STAGE dw 07E00h
 DISK db 0
 db 510-($-start) dup(0)
 dw 0AA55h

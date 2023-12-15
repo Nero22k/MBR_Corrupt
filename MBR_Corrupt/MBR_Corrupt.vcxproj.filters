@@ -34,10 +34,10 @@
     <None Include="second_stage.asm">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="IO.asm">
+    <None Include="IO.inc">
       <Filter>Header Files</Filter>
     </None>
-    <None Include="Utils.asm">
+    <None Include="Utils.inc">
       <Filter>Header Files</Filter>
     </None>
   </ItemGroup>

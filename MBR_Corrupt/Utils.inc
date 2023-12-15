@@ -1,14 +1,13 @@
 ; Library Fucntions
-
-strcmp proc uses bx si:
+strcmp proc
     Loop_CMP:
-        mov al, byte ptr [si]
-        cmp al, byte ptr [bx] 
+        mov al, [si]
+        cmp al, [bx] 
         
         
         jne Exit_Error
         
-        cmp byte ptr [bx], 0h
+        cmp byte ptr [bx], 0
         je Exit_Successful
         
         inc bx
@@ -16,7 +15,7 @@ strcmp proc uses bx si:
         jmp Loop_CMP
 
     Exit_Successful:
-        cmp byte ptr [si], 0h
+        cmp byte ptr [si], 0
         jne Exit_Error
         xor ax, ax
         ret
