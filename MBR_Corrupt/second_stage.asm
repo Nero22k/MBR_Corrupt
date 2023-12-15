@@ -53,26 +53,26 @@ SectorCopy:
 
 DiskRead:
     ;---read sector - 5th
-    mov bx, buffer               ; ES: BX must point to the buffer
-    mov dl, [DISK]      ; use boot drive passed to bootloader by BIOS in DL
-    mov dh, 0                    ; head number
-    mov ch, 0                    ; track number
-    mov cl, 05h                    ; sector number - (5th)
-    mov al, 01h                    ; number of sectors to read
-    mov ah, 02h                    ; read function number
+    mov bx, buffer              ; ES: BX must point to the buffer
+    mov dl, [DISK]      		; use boot drive passed to bootloader by BIOS in DL
+    mov dh, 0                   ; head number
+    mov ch, 0                   ; track number
+    mov cl, 05h                 ; sector number - (5th)
+    mov al, 01h                 ; number of sectors to read
+    mov ah, 02h                 ; read function number
     int 13h
 	
 	jc DiskRead
 	
 DiskWrite:
     ;---write sector - 1th
-    mov bx, buffer               ; ES: BX must point to the buffer
-	mov dl, [DISK]      ; use boot drive passed to bootloader by BIOS in DL
-    mov dh, 0                    ; head number
-    mov ch, 0                    ; track number
-    mov cl, 01h                    ; sector number - (1th)
-    mov al, 01h                    ; number of sectors to write
-    mov ah, 03h                    ; write function number
+    mov bx, buffer              ; ES: BX must point to the buffer
+	mov dl, [DISK]      		; use boot drive passed to bootloader by BIOS in DL
+    mov dh, 0                   ; head number
+    mov ch, 0                   ; track number
+    mov cl, 01h                 ; sector number - (1th)
+    mov al, 01h                 ; number of sectors to write
+    mov ah, 03h                 ; write function number
     int 13h
 	
 	jc DiskWrite
@@ -83,17 +83,26 @@ DiskCleanup:
     mov cx, 200h                ; 512 bytes per sector
     xor ax, ax                  ; Zero in AX
 clear_buffer:
-    mov [bx], ax       ; Write zero to buffer
+    mov [bx], ax       			; Write zero to buffer
     add bx, 02h                 ; Move BX to the next word (2 bytes)
     loop clear_buffer           ; Repeat for the entire buffer
 	
-	mov bx, buffer               ; Point BX to the start of the buffer
-	mov dl, [DISK]      ; use boot drive passed to bootloader by BIOS in DL
-    mov dh, 0                    ; head number
-    mov ch, 0                    ; track number
-    mov cl, 05h                    ; sector number - (5th)
-    mov al, 01h                    ; number of sectors to write
-    mov ah, 03h                    ; write function number
+	mov bx, buffer              ; Point BX to the start of the buffer
+	mov dl, [DISK]      		; use boot drive passed to bootloader by BIOS in DL
+    mov dh, 0                   ; head number
+    mov ch, 0                   ; track number
+    mov cl, 05h                 ; sector number - (5th)
+    mov al, 01h                 ; number of sectors to write
+    mov ah, 03h                 ; write function number
+    int 13h
+	
+	mov bx, buffer              ; Point BX to the start of the buffer
+	mov dl, [DISK]      		; use boot drive passed to bootloader by BIOS in DL
+    mov dh, 0                   ; head number
+    mov ch, 0                   ; track number
+    mov cl, 02h                 ; sector number - (2th)
+    mov al, 02h                 ; number of sectors to write
+    mov ah, 03h                 ; write function number
     int 13h
 	
 	jc DiskCleanup
@@ -118,5 +127,5 @@ DISK db 80h
 disknum db 99h
 buffer equ 9200h
 
-db 206 dup(0)
+db 187 dup(0)
 end start
